@@ -1,0 +1,108 @@
+/* politica-style.css */
+
+/* Estilos gerais da página de política */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f7f6; /* Um cinza bem claro, como na imagem */
+    margin: 0;
+    color: #333;
+}
+
+/* Simulação do Cabeçalho do seu site. 
+   Quando você integrar, você vai SUBSTITUIR isso 
+   pelo header real do seu `header.css` e `globals.css`
+*/
+.header-simulado {
+    background-color: #fff;
+    padding: 15px 30px;
+    border-bottom: 1px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.header-simulado .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #5b3c91;
+    text-decoration: none;
+}
+.header-simulado nav a {
+    margin-left: 20px;
+    text-decoration: none;
+    color: #555;
+    font-weight: bold;
+}
+/* Fim da simulação do header */
+
+
+/* Container principal da política (o "cartão") */
+.policy-container {
+    max-width: 900px;
+    margin: 40px auto; /* Centraliza na página */
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+/* Cabeçalho da página de política (com título e botão "voltar") */
+.policy-header {
+    display: flex;
+    align-items: center;
+    padding: 20px 30px;
+    border-bottom: 1px solid #eee;
+}
+
+.back-button {
+    display: inline-block;
+    background-color: #f0f0f0;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    color: #333;
+    text-decoration: none;
+    font-size: 2rem;
+    line-height: 40px; /* Alinha o '←' verticalmente */
+    text-align: center;
+    font-weight: bold;
+    margin-right: 20px;
+    transition: background-color 0.2s;
+}
+.back-button:hover {
+    background-color: #e5e5e5;
+}
+
+.policy-title {
+    font-size: 1.8rem;
+    color: #3d265a;
+    margin: 0;
+}
+
+/* Área de conteúdo principal com o texto */
+.policy-content {
+    padding: 30px 40px;
+    line-height: 1.7;
+    font-size: 0.95rem;
+}
+
+.policy-content h5 {
+    font-size: 1.3rem;
+    color: #5b3c91;
+    margin-top: 30px;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #e6e0f0;
+    padding-bottom: 5px;
+}
+
+.policy-content p {
+    margin-bottom: 15px;
+}
+
+.policy-content ul {
+    padding-left: 20px;
+}
+
+.policy-content li {
+    margin-bottom: 10px;
+}
