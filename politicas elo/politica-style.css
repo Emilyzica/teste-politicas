@@ -1,0 +1,137 @@
+/* politica-style.css (Versão Melhorada) */
+
+/* Adicionando a fonte 'Nunito' do seu projeto.
+   NOTA: No seu projeto real, você deve importar o 'globals.css' aqui,
+   mas para o teste separado, vamos definir a fonte.
+*/
+@font-face {
+    font-family: 'Nunito';
+    src: url('Nunito.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* Estilos gerais da página de política */
+body {
+    /* Aplicando a fonte 'Nunito' */
+    font-family: 'Nunito', Arial, sans-serif; 
+    background-color: #f4f7f6; /* Fundo cinza claro (como na imagem) */
+    margin: 0;
+    color: #444; /* Cor do texto um pouco mais suave */
+}
+
+/* Simulação do Cabeçalho do seu site. 
+  (Mantive o estilo do seu teste)
+*/
+.header-simulado {
+    background-color: #fff;
+    padding: 15px 30px;
+    border-bottom: 1px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.header-simulado .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #5b3c91;
+    text-decoration: none;
+}
+.header-simulado nav a {
+    margin-left: 20px;
+    text-decoration: none;
+    color: #555;
+    font-weight: bold;
+}
+/* Fim da simulação do header */
+
+
+/* Container principal da política (o "cartão") */
+.policy-container {
+    max-width: 900px;
+    margin: 40px auto; 
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+/* Cabeçalho da página de política (com título e botão "voltar") */
+.policy-header {
+    display: flex;
+    align-items: center;
+    padding: 24px 30px; /* Aumentei o preenchimento */
+    border-bottom: 1px solid #eee;
+}
+
+/* --- ESTILO PROFISSIONAL DO BOTÃO DE VOLTAR --- */
+.back-button {
+    display: flex; /* Para centralizar a imagem */
+    align-items: center;
+    justify-content: center;
+    background-color: #f0f0f0;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    text-decoration: none;
+    margin-right: 20px;
+    transition: background-color 0.2s ease-in-out;
+    border: 1px solid #e0e0e0; /* Borda sutil */
+    flex-shrink: 0; /* Impede que o botão encolha */
+}
+.back-button:hover {
+    background-color: #e5e5e5;
+}
+
+/* Estilo da imagem do ícone dentro do botão */
+.back-button img {
+    width: 20px; /* Tamanho ideal para o ícone */
+    height: 20px;
+    opacity: 0.7; /* Deixa o ícone um pouco mais suave */
+}
+/* --- FIM DO ESTILO DO BOTÃO --- */
+
+
+.policy-title {
+    font-size: 2rem; /* Título maior */
+    color: #3d265a;
+    margin: 0;
+    font-weight: 800; /* Mais peso (se a fonte Nunito permitir) */
+}
+
+/* Área de conteúdo principal com o texto */
+.policy-content {
+    padding: 30px 40px;
+    line-height: 1.7;
+    font-size: 1rem; /* Tamanho de fonte mais legível */
+}
+
+.policy-content h5 {
+    font-size: 1.5rem; /* Subtítulos maiores */
+    color: #5b3c91;
+    margin-top: 40px; /* Mais espaço entre as seções */
+    margin-bottom: 15px;
+    border-bottom: 2px solid #e6e0f0;
+    padding-bottom: 8px;
+    font-weight: 700;
+}
+
+.policy-content p {
+    margin-bottom: 16px;
+}
+
+.policy-content ul {
+    padding-left: 20px;
+}
+
+.policy-content li {
+    margin-bottom: 10px;
+}
+
+/* Deixa os textos em negrito com a cor do tema */
+.policy-content strong, 
+.policy-content b {
+    color: #3d265a;
+    font-weight: 700;
+}

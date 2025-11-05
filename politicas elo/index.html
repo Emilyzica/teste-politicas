@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exemplo de Fluxo de Privacidade v2 - EloMaterno</title>
+    
+    <style>
+        /* --- Estilos do Site (Simulação) --- */
+        @font-face {
+            font-family: 'Nunito';
+            src: url('Nunito.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body {
+            font-family: 'Nunito', Arial, sans-serif;
+            margin: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        /* Classe que bloqueia o scroll e a interação */
+        body.blocked {
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .page-content {
+            padding: 2rem;
+            height: 200vh; /* Força scroll para testar o bloqueio */
+        }
+        
+        .page-content h1 {
+            color: #5b3c91; /* Cor do seu projeto */
+        }
+        
+        .page-content p {
+            line-height: 1.6;
+        }
+
+        .page-content a {
+            color: #5b3c91;
+            font-weight: bold;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* --- Estilos do Sistema de Privacidade --- */
+
+        /* 1. Fundo escuro (Overlay) */
+        #page-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(3px);
+            z-index: 998;
+        }
+
+        /* 2. Banner Inicial (tipo image_4840c3.png) */
+        #cookie-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #fff;
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.1);
+            padding: 24px;
+            z-index: 999;
+            box-sizing: border-box;
+            border-top: 1px solid #ddd;
+        }
+        
+        .banner-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1100px;
+            margin: 0 auto;
+            gap: 20px;
+        }
+
+        .banner-content p {
+            margin: 0;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        .banner-content p a {
+            text-decoration: underline;
+            cursor: pointer;
+            color: #5b3c91;
+            font-weight: bold;
+        }
+
+        .banner-buttons {
+            display: flex;
+            gap: 15px;
+            flex-shrink: 0;
+        }
+
+        .btn {
+            font-family: 'Nunito', Arial, sans-serif;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary {
+            background-color: #5b3c91; /* Cor principal */
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #472f75;
+        }
+
+        .btn-secondary {
+            background-color: #f0f0f0;
+            color: #333;
+            border: 1px solid #ccc;
+        }
+        .btn-secondary:hover {
+            background-color: #e5e5e5;
+        }
+
+        /* 3. Modal de Preferências (tipo image_ae3346.png) */
+        #preferences-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            background-color: #fff;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            z-index: 1000;
+            display: flex;
+            overflow: hidden;
+            font-family: 'Nunito', Arial, sans-serif;
+        }
+
+        /* BARRA LATERAL (MENU) */
+        .modal-sidebar {
+            width: 200px;
+            background-color: #f9f9f9;
+            border-right: 1px solid #eee;
+            flex-shrink: 0;
+        }
+
+        .modal-sidebar h3 {
+            font-size: 1.2rem;
+            color: #3d265a;
+            padding: 24px;
+            margin: 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .modal-sidebar ul { list-style: none; padding: 0; margin: 0; }
+        .modal-sidebar li {
+            padding: 16px 24px;
+            cursor: pointer;
+            font-weight: 500;
+            color: #555;
+            border-bottom: 1px solid #eee;
+            transition: all 0.2s ease;
+        }
+        .modal-sidebar li.active,
+        .modal-sidebar li:hover {
+            background-color: #e6e0f0;
+            color: #5b3c91;
+        }
+
+        /* CONTEÚDO PRINCIPAL (ABAS) */
+        .modal-main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; 
+        }
+        
+        .modal-header {
+            padding: 24px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h4 { margin: 0; font-size: 1.3rem; color: #3d265a; }
+        #close-modal { font-size: 2rem; color: #aaa; cursor: pointer; line-height: 1; }
+        #close-modal:hover { color: #333; }
+
+        /* Área de conteúdo das abas */
+        .modal-policy-content {
+            padding: 24px;
+            overflow-y: auto; 
+            flex-grow: 1; 
+        }
+        
+        .modal-policy-content h5 { font-size: 1.1rem; color: #5b3c91; margin-top: 20px; }
+        .modal-policy-content p { font-size: 0.9rem; line-height: 1.6; color: #444; }
+
+        /* Estilos para a aba "Nossas Políticas" (links) */
+        .policy-links {
+            list-style: none;
+            padding: 0;
+            margin-top: 15px;
+        }
+        .policy-links li {
+            margin-bottom: 10px;
+        }
+        .policy-links a {
+            display: block;
+            padding: 12px;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #5b3c91;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+        .policy-links a:hover {
+            background-color: #e6e0f0;
+        }
+
+        /* Estilo para o toggle "Sempre Ativo" (tipo image_48ae63.png) */
+        .toggle-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .toggle-container strong {
+            color: #3d265a;
+        }
+        .switch { position: relative; display: inline-block; width: 50px; height: 28px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ccc; transition: .4s; border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute; content: ""; height: 20px; width: 20px; left: 4px;
+            bottom: 4px; background-color: white; transition: .4s; border-radius: 50%;
+        }
+        input:checked + .slider { background-color: #5b3c91; }
+        input:checked:disabled + .slider { background-color: #9d8ab7; }
+        input:checked + .slider:before { transform: translateX(22px); }
+
+        /* RODAPÉ DO MODAL (com checkbox) */
+        .modal-footer {
+            padding: 24px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .footer-consent {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .footer-consent label {
+            font-size: 0.9rem;
+            color: #555;
+            cursor: pointer;
+        }
+        .footer-consent input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        /* Botão desabilitado (para o "ler para aceitar") */
+        #modal-accept-all:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        /* 4. Ícone Widget (tipo image_b074e7.png) */
+        #cookie-widget {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 50%;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 997;
+            transition: transform 0.2s ease;
+        }
+        #cookie-widget:hover { transform: scale(1.1); }
+        
+        /* O CSS para a IMAGEM do ícone */
+        #cookie-widget img { 
+            width: 28px; 
+            height: 28px;
+        }
+
+    </style>
+</head>
+
+<body class="blocked">
+
+    <main class="page-content">
+        <h1>Bem-vinda à EloMaterno</h1>
+        <p>aqui leading page.</p>
+        <p>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</p>
+        
+    </main>
+
+    <div id="page-overlay" class="hidden"></div>
+
+    <div id="cookie-banner" class="hidden">
+        <div class="banner-content">
+            <p>O <b>EloMaterno</b> usa cookies para melhorar sua experiência. Para continuar, você precisa aceitar nossos <a id="banner-link-prefs">Termos de Uso e Política de Privacidade</a>.</p>
+            <div class="banner-buttons">
+                <button id="banner-btn-prefs" class="btn btn-secondary">Ver Termos</button>
+                <button id="banner-btn-accept" class="btn btn-primary">Aceitar Tudo</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="preferences-modal" class="hidden">
+        <div class="modal-sidebar">
+            <h3>Central de Privacidade</h3>
+            <ul>
+                <li id="tab-necessarios" class="modal-tab active">Necessários</li>
+                <li id="tab-politicas" class="modal-tab">Nossas Políticas</li>
+            </ul>
+        </div>
+
+        <div class="modal-main-content">
+            <div class="modal-header">
+                <h4 id="modal-title">Cookies Estritamente Necessários</h4>
+                <span id="close-modal">&times;</span>
+            </div>
+
+            <div class="modal-policy-content">
+                
+                <div id="content-necessarios" class="tab-content">
+                    <p>Estes cookies são essenciais para o funcionamento do site e não podem ser desativados. Eles são usados para funções básicas como manter seu login, garantir a segurança e permitir a navegação.</p>
+                    <div class="toggle-container">
+                        <strong>Sempre Ativo</strong>
+                        <label class="switch">
+                            <input type="checkbox" checked disabled>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="content-politicas" class="tab-content hidden">
+                    <p>Para usar o EloMaterno, você deve ler e concordar com nossas políticas. Clique em cada documento para ler.</p>
+                    
+                    <ul class="policy-links">
+                        <li><a href="termos_de_uso.html">1. Termos de Uso</a></li>
+                        <li><a href="politica_privacidade.html">2. Política de Privacidade</a></li>
+                        <li><a href="politica_cookies.html">3. Política de Cookies</a></li>
+                    </ul>
+                    
+                    <p style="margin-top: 20px;">Após ler os documentos, marque a caixa abaixo para confirmar seu aceite.</p>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <div class="footer-consent">
+                    <input type="checkbox" id="consent-checkbox">
+                    <label for="consent-checkbox">Li e aceito todas as políticas</label>
+                </div>
+                <button id="modal-accept-all" class="btn btn-primary" disabled>Confirmar e Aceitar</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="cookie-widget" class="hidden">
+        <img src="img/icone-cookie.png" alt="Preferências de Cookies">
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- 1. Seleção de Elementos ---
+            const pageBody = document.querySelector('body');
+            const pageOverlay = document.getElementById('page-overlay');
+            const cookieBanner = document.getElementById('cookie-banner');
+            const preferencesModal = document.getElementById('preferences-modal');
+            const cookieWidget = document.getElementById('cookie-widget');
+            
+            // Botões do Banner
+            const acceptBannerBtn = document.getElementById('banner-btn-accept');
+            const prefsBannerBtn = document.getElementById('banner-btn-prefs');
+            const bannerLinkPrefs = document.getElementById('banner-link-prefs');
+
+            // --- Lógica do Modal ---
+            const closeModalBtn = document.getElementById('close-modal');
+            const acceptModalBtn = document.getElementById('modal-accept-all');
+            const consentCheckbox = document.getElementById('consent-checkbox');
+            
+            // Abas
+            const modalTitle = document.getElementById('modal-title');
+            const tabNecessarios = document.getElementById('tab-necessarios');
+            const tabPoliticas = document.getElementById('tab-politicas');
+            const contentNecessarios = document.getElementById('content-necessarios');
+            const contentPoliticas = document.getElementById('content-politicas');
+
+            // --- 2. Funções Principais ---
+
+            function acceptPolicies() {
+                localStorage.setItem('policiesAccepted_EloMaterno', 'true'); 
+                
+                pageBody.classList.remove('blocked');
+                pageOverlay.classList.add('hidden');
+                cookieBanner.classList.add('hidden');
+                preferencesModal.classList.add('hidden');
+                cookieWidget.classList.remove('hidden');
+            }
+
+            function showPreferences() {
+                cookieBanner.classList.add('hidden');
+                preferencesModal.classList.remove('hidden');
+                pageOverlay.classList.remove('hidden'); 
+            }
+            
+            function showPreferencesFromWidget() {
+                preferencesModal.classList.remove('hidden');
+            }
+
+            function closeModal() {
+                preferencesModal.classList.add('hidden');
+                
+                if (localStorage.getItem('policiesAccepted_EloMaterno') !== 'true') {
+                    cookieBanner.classList.remove('hidden');
+                }
+            }
+
+            function checkInitialConsent() {
+                const policiesAccepted = localStorage.getItem('policiesAccepted_EloMaterno') === 'true';
+
+                // Lógica de bloqueio de navegação
+                const isLandingPage = window.location.pathname.endsWith('/') || window.location.pathname.endsWith('/index.html');
+
+                if (policiesAccepted) {
+                    // Já aceitou. A página NÃO é bloqueada.
+                    pageBody.classList.remove('blocked');
+                    // Mostra só o widget de cookie
+                    cookieWidget.classList.remove('hidden');
+                } else {
+                    // NÃO ACEITOU.
+                    if (!isLandingPage) {
+                        // Se tentar acessar outra página (ex: logMae.html), força o retorno
+                        alert("Você precisa aceitar os Termos de Uso para navegar no EloMaterno.");
+                        window.location.href = 'index.html'; // Mude para a URL da sua landing page
+                        return;
+                    }
+                    
+                    // Se está na landing page e não aceitou, mostra o fluxo
+                    pageOverlay.classList.remove('hidden'); 
+                    cookieBanner.classList.remove('hidden'); 
+                }
+            }
+
+            // --- 3. Atribuição de Eventos ---
+            acceptBannerBtn.addEventListener('click', acceptPolicies);
+            prefsBannerBtn.addEventListener('click', showPreferences);
+            bannerLinkPrefs.addEventListener('click', (e) => {
+                e.preventDefault(); 
+                showPreferences();
+            });
+            
+            closeModalBtn.addEventListener('click', closeModal);
+            acceptModalBtn.addEventListener('click', acceptPolicies);
+            
+            cookieWidget.addEventListener('click', showPreferencesFromWidget);
+
+            // [NOVO] Evento do Checkbox para habilitar o botão
+            consentCheckbox.addEventListener('change', () => {
+                if (consentCheckbox.checked) {
+                    acceptModalBtn.disabled = false;
+                    acceptModalBtn.innerText = "Confirmar e Aceitar";
+                } else {
+                    acceptModalBtn.disabled = true;
+                    acceptModalBtn.innerText = "Confirme o aceite";
+                }
+            });
+
+            // [NOVO] Eventos de clique nas Abas do Modal
+            tabNecessarios.addEventListener('click', () => {
+                modalTitle.innerText = "Cookies Estritamente Necessários";
+                tabNecessarios.classList.add('active');
+                tabPoliticas.classList.remove('active');
+                contentNecessarios.classList.remove('hidden');
+                contentPoliticas.classList.add('hidden');
+            });
+            
+            tabPoliticas.addEventListener('click', () => {
+                modalTitle.innerText = "Nossas Políticas";
+                tabPoliticas.classList.add('active');
+                tabNecessarios.classList.remove('active');
+                contentPoliticas.classList.remove('hidden');
+                contentNecessarios.classList.add('hidden');
+            });
+
+            // --- 4. Execução Inicial ---
+            checkInitialConsent();
+        });
+    </script>
+</body>
+</html>
